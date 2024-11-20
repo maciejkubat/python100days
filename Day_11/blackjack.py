@@ -14,26 +14,29 @@ def draw_a_card(card_list):
         card_list[-1] = 1
     return card_list
 
+def get_initial_cards():
+    return [random.choice(cards), random.choice(cards)]
+
 def blackjack():
     print(art.logo)
-    your_cards = [random.choice(cards), random.choice(cards)]
-    card_sum = sum(your_cards)
-    computer_cards = [random.choice(cards), random.choice(cards)]
+    player_cards = get_initial_cards()
+    card_sum = sum(player_cards)
+    computer_cards = get_initial_cards()
     computer_sum = sum(computer_cards)
-    print_score(your_cards, "Player's")
+    print_score(player_cards, "Player's")
     print(f"Computer's first card: {computer_cards[0]}")
     another_card = True
     while another_card:
         next_card = input("Type 'y' to get another card, type 'n' to pass: ").lower()
         if next_card == "y":
-            your_cards = draw_a_card(your_cards)
-            card_sum = sum(your_cards)
+            player_cards = draw_a_card(player_cards)
+            card_sum = sum(player_cards)
             if card_sum > 21:
-                print_score(your_cards, "Player's")
+                print_score(player_cards, "Player's")
                 print("You loose")
                 another_card = False
             else:
-                print_score(your_cards, "Player's")
+                print_score(player_cards, "Player's")
         else:
             while computer_sum < 17:
                 draw_a_card(computer_cards)
