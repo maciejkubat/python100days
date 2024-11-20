@@ -17,6 +17,16 @@ def draw_a_card(card_list):
 def get_initial_cards():
     return [random.choice(cards), random.choice(cards)]
 
+def determine_result(player_cards,computer_cards)
+    player_sum = sum(player_cards)
+    computer_sum = sum(computer_cards)
+    if computer_sum == 21 or (player_sum < computer_sum < 21):
+        print("Computer wins!")
+    elif computer_sum == player_sum:
+        print("It's a draw")
+    else:
+        print("Player wins!")
+
 def blackjack():
     print(art.logo)
     player_cards = get_initial_cards()
@@ -42,12 +52,7 @@ def blackjack():
                 draw_a_card(computer_cards)
                 computer_sum = sum(computer_cards)
             print_score(computer_cards, "Computer's")
-            if computer_sum == 21 or (card_sum < computer_sum < 21):
-                print("Computer wins!")
-            elif computer_sum == card_sum:
-                print("It's a draw")
-            else:
-                print("Player wins!")
+            determine_result(player_cards,computer_cards)
             another_card = False
 
 game_on = True
