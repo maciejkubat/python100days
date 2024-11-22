@@ -17,7 +17,7 @@ def draw_a_card(card_list):
 def get_initial_cards():
     return [random.choice(cards), random.choice(cards)]
 
-def determine_result(player_cards,computer_cards)
+def determine_result(player_cards,computer_cards):
     player_sum = sum(player_cards)
     computer_sum = sum(computer_cards)
     if computer_sum == 21 or (player_sum < computer_sum < 21):
