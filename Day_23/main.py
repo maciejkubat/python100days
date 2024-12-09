@@ -21,12 +21,6 @@ screen.onkey(key="Down", fun=player.down)
 game_is_on = True
 spawned = False
 while game_is_on:
-    # current_time = datetime.now()
-    # seconds_in_current_minute = current_time.second
-    # spawned_second = 0
-    # if seconds_in_current_minute % randint(1,3) == 0 and seconds_in_current_minute != spawned_second:
-    #     car_manager.spawn_car()
-    #     spawned_second = seconds_in_current_minute
     dice_throw = randint(1,4)
     if dice_throw == 3:
         car_manager.spawn_car()

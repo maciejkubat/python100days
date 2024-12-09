@@ -23,7 +23,7 @@ class CarManager:
             car.turtlesize(stretch_len=2, outline=None)
             car.color(choice(COLORS))
             car.pu()
-            car.teleport(320 + randint(25,75),random_y)
+            car.teleport(280 + randint(25,75),random_y)
             self.cars.append(car)
 
     def move_cars(self):

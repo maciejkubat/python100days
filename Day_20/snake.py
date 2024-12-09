@@ -51,6 +51,15 @@ class Snake():
         segment.teleport(x,y)
         self.segments.append(segment)
 
+    def reset(self):
+        for seg in self.segments:
+            seg.goto(1000,1000)
+        self.segments.clear()
+        self.start_x = START_X
+        self.start_y = START_Y
+        self.create_snake()
+        self.head = self.segments[0]
+
     def extend(self):
         x = self.segments[-1].xcor()
         y = self.segments[-1].ycor()
