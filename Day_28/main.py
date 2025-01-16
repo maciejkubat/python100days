@@ -1,4 +1,3 @@
-from pickletools import long1
 from tkinter import *
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
