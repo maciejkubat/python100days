@@ -26,9 +26,9 @@ def save():
         messagebox.showinfo(title="Warning", message="Do not leave any fields empty")
     else:
         with open('data.json', mode="w") as file:
-            json.dump(new_data, file, indent=4)
             data = json.load(file)
-            print(data)
+            data.update(new_data)
+            json.dump(new_data, file, indent=4)
         website_entry.delete(0,END)
         email_entry.delete(0, END)
         email_entry.insert(0, "maciek.kubat@gmail.com")
