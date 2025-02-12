@@ -4,7 +4,7 @@ from random import choice
 
 def send_mail(message):
    my_email = "maciek.kubat@gmail.com"
-   password = "ryiu gzhj puxp aklp"
+   password = ""
    with smtplib.SMTP("smtp.gmail.com",port=587) as connection:
        connection.starttls()
        connection.login(user=my_email,password=password)
