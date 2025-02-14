@@ -7,7 +7,7 @@ account_sid = ''
 auth_token = os.environ.get("TWILIO_TOKEN")
 
 parameters = {
-    "q":"Krak",
+    "q":"Kraków,PL",
     "appid": API_KEY
 }
 
