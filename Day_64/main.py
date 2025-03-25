@@ -7,6 +7,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
+import os
+
+TMDB_TOKEN = os.environ.get("TMDB_TOKEN")
 
 '''
 Red underlines? Install the required packages first: 
@@ -39,9 +42,9 @@ class Movie(db.Model):
     title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     description: Mapped[str] = mapped_column(String(500), nullable=False)
-    rating: Mapped[str] = mapped_column(Float, nullable=False)
-    ranking: Mapped[int] = mapped_column(Integer, nullable=False)
-    review: Mapped[str] = mapped_column(String(250), nullable=False)
+    rating: Mapped[str] = mapped_column(Float, nullable=True)
+    ranking: Mapped[int] = mapped_column(Integer, nullable=True)
+    review: Mapped[str] = mapped_column(String(250), nullable=True)
     img_url: Mapped[str] = mapped_column(String(500), nullable=False)
 
 class EditForm(FlaskForm):
@@ -103,22 +106,74 @@ def delete(index):
             db.session.commit()
             return redirect(url_for('home'))
 
-@app.route("/add", methods=["GET"])
+@app.route("/add", methods=["GET","POST"])
 def add():
     form = AddForm()
-    return render_template("add.html",form=form)
+    if request.method == "GET":
+        return render_template("add.html",form=form)
+    elif request.method == "POST" and form.validate_on_submit():
+        title = form.title.data
+        movies = get_movies(title)
+        return render_template("select.html",movies=movies)
+
+@app.route( "/add_to_list/<int:index>")
+def add_to_list(index):
+    url = f"https://api.themoviedb.org/3/movie/{index}"
+    parameters = {
+        "language" : "en-US"
+    }
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {TMDB_TOKEN}"
+    }
+    response = requests.get(url, headers=headers, params=parameters)
+    response.raise_for_status()
+    data = response.json()
+    print(data)
+    new_movie = Movie(
+        title=data['title'],
+        year=data['release_date'].split("-")[0],
+        description=data['overview'],
+        img_url=f"https://image.tmdb.org/t/p/w500{data['poster_path']}"
+    )
+    with app.app_context():
+        db.session.add(new_movie)
+        db.session.commit()
+        movie_to_update = db.session.execute(db.select(Movie).where(Movie.title == new_movie.title)).scalar()
+        db.session.commit()
+        return redirect(url_for('edit',index=movie_to_update.id))
+
+def get_movies(title):
+    parameters = {
+        "query" : title,
+        "include_adult" : "false",
+        "language" : "en-US",
+        "page" : 1
+    }
+    url = "https://api.themoviedb.org/3/search/movie"
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {TMDB_TOKEN}"
+    }
+    response = requests.get(url, headers=headers, params=parameters)
+    response.raise_for_status()
+    data = response.json()["results"]
+    return data
+
 
 @app.route("/")
 def home():
     with app.app_context():
-        result = db.session.execute(db.select(Movie).order_by(Movie.title))
+        result = db.session.execute(db.select(Movie).order_by(Movie.rating))
         all_movies = result.scalars().all()
+        for index,movie in enumerate(reversed(all_movies)):
+            movie.ranking = index + 1
     return render_template("index.html", all_movies=all_movies)
 
 # with app.app_context():
 #     db.create_all()
 #     add_entry()
-#
+
 # with app.app_context():
 #     result = db.session.execute(db.select(Movie).order_by(Movie.title))
 #     all_books = result.scalars()
